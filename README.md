@@ -46,10 +46,6 @@ Follow these instructions to get a copy of the project up and running on your lo
 - Zakaria Choukri
 - Ayman Youss
 
-## License
-
-This project is licensed under the [License Name] - see the [LICENSE.md](LICENSE.md) file for details.
-
 ## Acknowledgments
 
 - [Mention any libraries, frameworks, or resources used]
@@ -57,14 +53,3 @@ This project is licensed under the [License Name] - see the [LICENSE.md](LICENSE
 ## Presentation and Demonstration
 
 [Include a link to the presentation and demo video]
-
-## Grading Criteria
-
-- **Code Quality**: Adherence to C++ best practices, readability, and modularity.
-- **GUI Design**: Usability, responsiveness, and adherence to design principles.
-- **Functionality**: Completeness of file synchronization features, version control, and secure authentication.
-- **Network Implementation**: Successful integration of basic sockets for remote synchronization.
-- **Multithreading**: Effective use of threads for improved performance.
-- **Security Measures**: Implementation of secure authentication and file transfer protocols.
-- **Documentation**: Clarity and completeness of user and technical documentation.
-
