@@ -2,9 +2,12 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 #include <functional>
 
 using namespace std;
+namespace fs = std::filesystem;
+
 
 void CommandHandler::executeCommand(const std::string& command) {
     std::istringstream stream(command);
@@ -52,31 +55,56 @@ void CommandHandler::executeCommand(const std::string& command) {
 }
 
 
-void CommandHandler::handleAdd(const std::string& file) {
-
+void CommandHandler::handleAdd(const std::string& filesToAdd) {
     if (!isLoggedIn) {
         std::cout << "Error: You must be logged in to add files.\n";
         return;
     }
-    std::cout << "Adding file: " << file << "\n";
-    // Add file handling logic here
+    if (filesToAdd == ".") {
+        // Add logic to stage all files in the current directory
+        for (const auto& entry : fs::directory_iterator(fs::current_path())) {
+            if (entry.is_regular_file()) {
+                stagedFiles.push_back(entry.path().string());
+            }
+        }
+    } else {
+        std::istringstream iss(filesToAdd);
+        std::string file;
+        while (iss >> file) {
+            stagedFiles.push_back(file);
+        }
+    }
 
-    std::cout << "Adding file: " << file << " to staging area.\n";
-
+    std::cout << "Staged files for commit.\n";
 }
 
 void CommandHandler::handleCommit(const std::string& message) {
-
     if (!isLoggedIn) {
         std::cout << "Error: You must be logged in to add files.\n";
         return;
     }
-    
-    std::cout << "Committing with message: " << message << "\n";
-    // Add commit logic here
+    std::string repoPath = "testSync/dir1"; // Set this to your repository path
 
-    std::cout << "Committing staged files with message: " << message << "\n";
+    for (const auto& file : stagedFiles) {
+        std::string destFile = repoPath + "/" + fs::path(file).filename().string();
 
+        // Check if the file already exists in the destination
+        if (fs::exists(destFile)) {
+            // If it exists, remove it
+            fs::remove(destFile);
+        }
+
+        // Copy the new file to the destination
+        try {
+            fs::copy(file, destFile);
+            std::cout << "File committed: " << destFile << std::endl;
+        } catch (const fs::filesystem_error& e) {
+            std::cerr << "Error copying file: " << e.what() << '\n';
+        }
+    }
+
+    stagedFiles.clear(); // Clear staged files after commit
+    std::cout << "Commit successful: " << message << std::endl;
 }
 
 void CommandHandler::createAccount(const std::string& email, const std::string& password) {
