@@ -8,7 +8,7 @@
 using namespace std;
 namespace fs = std::filesystem;
 
-const fs::path gitBase = "C:/Users/21269/Desktop/securesync/gitBase";
+const fs::path gitBase = "./gitBase";
 
 
 
@@ -57,8 +57,9 @@ void CommandHandler::executeCommand(const std::string& command) {
                 fs::create_directories(gitBaseDir);
             }
             placeGitFile();
+        } else if (gitCommand == "pull") {
+            handlePull();
         }
-        
         else {
             std::cout << "Unknown git command.\n";
         }
@@ -252,3 +253,42 @@ void CommandHandler::updateGitFileVersionNumber(const std::string& filePath) {
     outFile << versionNumber;
     outFile.close();
 }
+
+void CommandHandler::handlePull() {
+    if (!checkGitFile()) {
+        std::cerr << "git.txt not found or invalid in the current directory." << std::endl;
+        return;
+    }
+
+    unsigned int currentVersion = versionNumber;
+    if (currentVersion == 0) {
+        std::cout << "No previous versions to pull.\n";
+        return;
+    }
+
+    unsigned int previousVersion = currentVersion - 1;
+    fs::path gitBaseDir = gitBase / currentDirectory.filename();
+    fs::path previousVersionDir = gitBaseDir / ("version_" + std::to_string(previousVersion));
+
+    if (!fs::exists(previousVersionDir)) {
+        std::cout << "Version " << previousVersion << " does not exist in gitBase.\n";
+        return;
+    }
+
+    // Clear existing files in the current working directory
+    for (const auto& entry : fs::directory_iterator(currentDirectory)) {
+        if (entry.is_regular_file() && entry.path().filename() != "git.txt") {
+            fs::remove(entry.path());
+        }
+    }
+
+    // Copy files (except git.txt) from the previous version to the current working directory
+    for (const auto& entry : fs::directory_iterator(previousVersionDir)) {
+        if (entry.is_regular_file() && entry.path().filename() != "git.txt") {
+            fs::copy(entry.path(), currentDirectory / entry.path().filename());
+        }
+    }
+
+    std::cout << "Pull successful. Pulled changes from version " << previousVersion << ".\n";
+}
+

@@ -32,6 +32,7 @@ public:
     std::string getVersionDirectoryName();
     std::string getCurrentDirectory() const;
     void updateGitFileVersionNumber(const std::string& filePath);
+    void handlePull();
 
 
 };
