@@ -3,6 +3,19 @@
 #include <qfiledialog.h>
 #include "../../../include/CommandHandler.h"
 #include <iostream>
+#include <QMessageBox>
+
+namespace fs = std::filesystem;
+const fs::path gitBase = "./gitBase";
+
+static QString chosenDirectory;
+static std::vector<std::string> localStagedFiles;
+
+static unsigned int localVersionNumber;
+
+static CommandHandler ch("");
+
+static std::filesystem::path rootDirectory = std::filesystem::absolute(std::filesystem::path(__FILE__).parent_path().parent_path().parent_path().parent_path());
 
 secondPage::secondPage(QWidget *parent)
     : QDialog(parent)
@@ -23,19 +36,18 @@ secondPage::~secondPage()
 
 void secondPage::on_chooseDirectoryButton_clicked()
 {
-    QString directory = QFileDialog::getExistingDirectory(this, "Select a Directory");
+    chosenDirectory = QFileDialog::getExistingDirectory(this, "Select a Directory");
 
-    if (!directory.isEmpty()) {
-        ui->directoryLineEdit->setText(directory);
-        updateFileList(directory);
+    if (!chosenDirectory.isEmpty()) {
+        ui->directoryLineEdit->setText(chosenDirectory);
+        updateFileList(chosenDirectory);
 
-        std::filesystem::path currentPath2 = std::filesystem::absolute(std::filesystem::path(__FILE__).parent_path().parent_path().parent_path().parent_path());
-        CommandHandler commandHandler2(currentPath2.string());
+        ch.currentDirectory = chosenDirectory.toStdString();
+        ch.isLoggedIn = true;
+        std::cout << ch.currentDirectory << std::endl;
 
-        commandHandler2.currentDirectory = directory.toStdString();
-        // std::cout << commandHandler2.currentDirectory.string() << std::endl;
-
-        if (commandHandler2.checkGitFile()) {
+        if (ch.checkGitFile()) {
+            ui->gitInitButton->setEnabled(false);
             ui->gitAddButton->setEnabled(true);
             ui->gitPullButton->setEnabled(true);
             ui->gitCommitButton->setEnabled(true);
@@ -64,12 +76,31 @@ void secondPage::updateFileList(const QString &directoryPath)
 
 void secondPage::on_gitInitButton_clicked()
 {
+    ui->gitInitButton->setEnabled(false);
+    ui->gitAddButton->setEnabled(true);
+    ui->gitPullButton->setEnabled(true);
+    ui->gitCommitButton->setEnabled(true);
 
+    // std::cout << gitBase << std::endl;
+
+    fs::path gitBaseDir = fs::path("gitBase") / fs::path(ch.currentDirectory.string()).filename();
+    // std::cout << gitBaseDir << std::endl;
+
+    if (!fs::exists(gitBaseDir)) {
+        fs::create_directories(gitBaseDir);
+    }
+    ch.placeGitFile();
+
+    updateFileList(chosenDirectory);
 }
 
 
 void secondPage::on_gitAddButton_clicked()
 {
+
+    ch.handleAdd(".");
+    updateFileList(chosenDirectory);
+    QMessageBox::information(this, "Files added", "Staged files for commit");
 
 }
 
@@ -77,11 +108,31 @@ void secondPage::on_gitAddButton_clicked()
 void secondPage::on_gitPullButton_clicked()
 {
 
+    ch.handlePull();
+    updateFileList(chosenDirectory);
+    QMessageBox::information(this, "Pull", "Files restored to their latest version");
+
 }
 
 
 void secondPage::on_gitCommitButton_clicked()
 {
+
+    std::string message = ui->commitMessageTextEdit->toPlainText().toStdString();
+    ch.handleCommit(message);
+    updateFileList(chosenDirectory);
+    QMessageBox::information(this, "Files Commited", "Commit successful");
+
+}
+
+
+void secondPage::on_revertButton_clicked()
+{
+
+    unsigned int vers = std::stoul(ui->revertInput->text().toStdString());
+    ch.handleRevert(vers);
+    updateFileList(chosenDirectory);
+    QMessageBox::information(this, "Revert", "Reverted to wanted version");
 
 }
 

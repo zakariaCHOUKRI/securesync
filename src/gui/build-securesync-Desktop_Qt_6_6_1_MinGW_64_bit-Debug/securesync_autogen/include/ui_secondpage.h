@@ -33,6 +33,8 @@ public:
     QTextEdit *commitMessageTextEdit;
     QLabel *label;
     QLabel *label_2;
+    QPushButton *revertButton;
+    QLineEdit *revertInput;
 
     void setupUi(QDialog *secondPage)
     {
@@ -47,7 +49,7 @@ public:
         chooseDirectoryButton->setGeometry(QRect(20, 20, 111, 23));
         fileListWidget = new QListWidget(secondPage);
         fileListWidget->setObjectName("fileListWidget");
-        fileListWidget->setGeometry(QRect(560, 40, 271, 321));
+        fileListWidget->setGeometry(QRect(560, 90, 271, 271));
         gitInitButton = new QPushButton(secondPage);
         gitInitButton->setObjectName("gitInitButton");
         gitInitButton->setGeometry(QRect(20, 70, 75, 30));
@@ -65,10 +67,16 @@ public:
         commitMessageTextEdit->setGeometry(QRect(110, 90, 431, 271));
         label = new QLabel(secondPage);
         label->setObjectName("label");
-        label->setGeometry(QRect(630, 20, 131, 16));
+        label->setGeometry(QRect(630, 70, 131, 16));
         label_2 = new QLabel(secondPage);
         label_2->setObjectName("label_2");
         label_2->setGeometry(QRect(110, 70, 131, 16));
+        revertButton = new QPushButton(secondPage);
+        revertButton->setObjectName("revertButton");
+        revertButton->setGeometry(QRect(560, 20, 111, 30));
+        revertInput = new QLineEdit(secondPage);
+        revertInput->setObjectName("revertInput");
+        revertInput->setGeometry(QRect(680, 20, 151, 25));
 
         retranslateUi(secondPage);
 
@@ -85,6 +93,7 @@ public:
         gitCommitButton->setText(QCoreApplication::translate("secondPage", "git commit", nullptr));
         label->setText(QCoreApplication::translate("secondPage", "content of the directory ", nullptr));
         label_2->setText(QCoreApplication::translate("secondPage", "commit message", nullptr));
+        revertButton->setText(QCoreApplication::translate("secondPage", "git revert", nullptr));
     } // retranslateUi
 
 };
