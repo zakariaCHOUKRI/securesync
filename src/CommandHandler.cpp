@@ -96,7 +96,6 @@ void CommandHandler::handleAdd(const std::string& filesToAdd) {
 
     std::cout << "Staged files for commit.\n";
 }
-
 void CommandHandler::handleCommit(const std::string& message) {
     if (!checkGitFile()) {
         std::cerr << "git.txt not found or invalid in the current directory." << std::endl;
@@ -117,55 +116,136 @@ void CommandHandler::handleCommit(const std::string& message) {
     fs::path versionDir = gitBaseDir / versionDirName;
     fs::create_directory(versionDir);
 
-    // Copy staged files to the version folder
+    // Prepare to update git.txt with commit info
+    std::ostringstream commitInfo;
+    auto now = std::chrono::system_clock::now();
+    auto now_c = std::chrono::system_clock::to_time_t(now);
+    commitInfo << "\n" <<  std::put_time(std::localtime(&now_c), "%Y-%m-%d %H:%M:%S") << "\n";
+    commitInfo << "Message: " << message << "\nFiles:\n";
+
+    // cout << commitInfo.str() <<endl;
+
+    // Copy files and update commit info
     for (const auto& file : stagedFiles) {
-        std::string destFile = versionDir.string() + "/" + fs::path(file).filename().string();
-        fs::copy(file, destFile, fs::copy_options::overwrite_existing);
-        cout << destFile << endl;
+        if (fs::path(file).filename() != "git.txt") {
+            std::string destFile = versionDir.string() + "/"+ fs::path(file).filename().string();
+            fs::copy(file, destFile, fs::copy_options::overwrite_existing);
+            commitInfo << fs::path(file).filename() << "\n";
+        }
     }
 
-    // Read the current git.txt for version number
-    std::ifstream inFile(currentDirectory / "git.txt");
-    if (!inFile.is_open()) {
-        std::cerr << "Unable to open git.txt for reading." << std::endl;
-        return;
-    }
+    // Update git.txt with commit history
+    std::string contentFile = rewriteGitFileWithNewInfo(currentDirectory.string() + "/"+ "git.txt",commitInfo.str());
 
-    unsigned int prevVersionNumber;
-    inFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Skip the first line
-    inFile >> prevVersionNumber; // Read the previous version number
-    inFile.close();
+    // cout << currentDirectory.string() + "/"+ "git.txt" << endl;
+    // std::ofstream gitFile(currentDirectory.string() + "/"+ "git.txt", std::ios::app);
+    // gitFile << commitInfo.str();
+    // gitFile.close();
 
-    // Open the current git.txt for writing and append mode
-    std::ofstream outFile(currentDirectory / "git.txt");
-    if (!outFile.is_open()) {
-        std::cerr << "Unable to open git.txt for writing." << std::endl;
-        return;
-    }
-
-    // Write the magic number
-    outFile << "1234\n";
-
-    // Write the updated version number
-    outFile << prevVersionNumber + 1 << "\n";
-
-    // Get current timestamp for the commit
-    auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::tm* timestamp = std::localtime(&now);
-
-    // Append commit information
-    outFile << std::put_time(timestamp, "%Y-%m-%d %H:%M:%S") << "\n";
-    for (const auto& file : stagedFiles) {
-        outFile << fs::path(file).filename().string() << "\n";
-    }
-    outFile << "Message: " << message << "\n";
-
-    outFile.close();
+    // Increment version number and update git.txt with the new version number
+    incrementVersionNumber();
+    updateGitFileVersionNumber(currentDirectory.string()+ "/"+ "git.txt", contentFile); // Modify this function to only update version number
 
     // Clear staged files after commit
     stagedFiles.clear();
     std::cout << "Commit successful: " << message << std::endl;
 }
+
+std::string CommandHandler::rewriteGitFileWithNewInfo(const std::string& filePath, const std::string& newInfo) {
+    // Read the entire content of git.txt into a string
+    std::ifstream inFile(filePath);
+
+    std::string fileContent((std::istreambuf_iterator<char>(inFile)), std::istreambuf_iterator<char>());
+    inFile.close();
+
+    // Modify the content as needed
+    fileContent += newInfo; // Appending new information
+
+    return fileContent;
+    
+    // // Write the modified content back to git.txt
+    // std::ofstream outFile(filePath); // Open in write mode
+    // cout << filePath << endl;
+    // if (!outFile.is_open()) {
+    //     std::cerr << "Unable to open git.txt for writing." << std::endl;
+    //     return;
+    // }
+    // // cout << fileContent << endl;
+    // outFile << fileContent;
+    // outFile.close();
+
+    // cout << "git.txt updated at " << filePath << " with new info: " << newInfo << endl;
+}
+
+// void CommandHandler::handleCommit(const std::string& message) {
+//     if (!checkGitFile()) {
+//         std::cerr << "git.txt not found or invalid in the current directory." << std::endl;
+//         return;
+//     }
+
+//     if (!isLoggedIn) {
+//         std::cout << "Error: You must be logged in to add files.\n";
+//         return;
+//     }
+
+//     fs::path gitBaseDir = gitBase / currentDirectory.filename();
+//     if (!fs::exists(gitBaseDir)) {
+//         fs::create_directories(gitBaseDir);
+//     }
+
+//     std::string versionDirName = getVersionDirectoryName();
+//     fs::path versionDir = gitBaseDir / versionDirName;
+//     fs::create_directory(versionDir);
+
+//     // Copy staged files to the version folder
+//     for (const auto& file : stagedFiles) {
+//         std::string destFile = versionDir.string() + "/" + fs::path(file).filename().string();
+//         fs::copy(file, destFile, fs::copy_options::overwrite_existing);
+//         cout << destFile << endl;
+//     }
+
+//     // Read the current git.txt for version number
+//     std::ifstream inFile(currentDirectory / "git.txt");
+//     if (!inFile.is_open()) {
+//         std::cerr << "Unable to open git.txt for reading." << std::endl;
+//         return;
+//     }
+
+//     unsigned int prevVersionNumber;
+//     inFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Skip the first line
+//     inFile >> prevVersionNumber; // Read the previous version number
+//     inFile.close();
+
+//     // Open the current git.txt for writing and append mode
+//     std::ofstream outFile(currentDirectory / "git.txt");
+//     if (!outFile.is_open()) {
+//         std::cerr << "Unable to open git.txt for writing." << std::endl;
+//         return;
+//     }
+
+//     // Write the magic number
+//     outFile << "1234\n";
+
+//     // Write the updated version number
+//     outFile << prevVersionNumber + 1 << "\n";
+
+//     // Get current timestamp for the commit
+//     auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+//     std::tm* timestamp = std::localtime(&now);
+
+//     // Append commit information
+//     outFile << std::put_time(timestamp, "%Y-%m-%d %H:%M:%S") << "\n";
+//     for (const auto& file : stagedFiles) {
+//         outFile << fs::path(file).filename().string() << "\n";
+//     }
+//     outFile << "Message: " << message << "\n";
+
+//     outFile.close();
+
+//     // Clear staged files after commit
+//     stagedFiles.clear();
+//     std::cout << "Commit successful: " << message << std::endl;
+// }
 
 
 
@@ -230,8 +310,10 @@ bool CommandHandler::checkGitFile() {
     unsigned int storedVersion;
     if (inFile >> code >> storedVersion) {
         versionNumber = storedVersion;
+        inFile.close();
         return code == "1234";
     }
+    inFile.close();
     return false;
 }
 
@@ -247,7 +329,7 @@ std::string CommandHandler::getCurrentDirectory() const {
     return currentDirectory.string();
 }
 
-void CommandHandler::updateGitFileVersionNumber(const std::string& filePath) {
+void CommandHandler::updateGitFileVersionNumber(const std::string& filePath,const std::string& contentFile) {
     std::ifstream inFile(filePath);
     if (!inFile.is_open()) {
         std::cerr << "Unable to open git.txt for reading." << std::endl;
@@ -272,9 +354,11 @@ void CommandHandler::updateGitFileVersionNumber(const std::string& filePath) {
         std::cerr << "Unable to open git.txt for writing." << std::endl;
         return;
     }
+    cout << contentFile.substr(6,contentFile.length()) << endl;
 
     outFile << code << std::endl;
     outFile << versionNumber;
+    outFile << contentFile.substr(6,contentFile.length());
     outFile.close();
 }
 
