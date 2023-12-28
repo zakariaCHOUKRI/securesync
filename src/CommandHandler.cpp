@@ -197,8 +197,7 @@ void CommandHandler::handleLogin(const std::string& email, const std::string& pa
 }
 
 void CommandHandler::handleRevert(unsigned int versionNumber) {
-    const fs::path gitBaseDir = "C:/Users/21269/Desktop/securesync/gitBase"; // Adjust the path as needed
-    fs::path versionDir = gitBaseDir / currentDirectory.filename() / ("version_" + std::to_string(versionNumber));
+    fs::path versionDir = gitBase / currentDirectory.filename() / ("version_" + std::to_string(versionNumber));
 
     if (!fs::exists(versionDir) || !fs::is_directory(versionDir)) {
         std::cerr << "Version directory does not exist: " << versionDir << std::endl;
