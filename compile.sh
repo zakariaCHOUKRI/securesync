@@ -15,8 +15,8 @@ OUTPUT_DIR=./
 # Set the executable name
 EXECUTABLE=myProgram
 
-# Find all .cpp files in the source directory
-CPP_FILES=$(find $SRC_DIR -name "*.cpp")
+# Find all .cpp files in the source directory, excluding those in the 'gui' folder
+CPP_FILES=$(find $SRC_DIR -name "*.cpp" | grep -v "$SRC_DIR/gui/")
 
 # Initialize an empty string for object files
 OBJ_FILES=""
@@ -24,7 +24,6 @@ OBJ_FILES=""
 # Compile each .cpp file
 for FILE in $CPP_FILES; do
     OBJ_FILE="${FILE%.cpp}.o"
-    # echo "$OBJ_FILE"
     $COMPILER -I$INCLUDE_DIR -c $FILE -o $OBJ_FILE
     OBJ_FILES="$OBJ_FILES $OBJ_FILE"
 done

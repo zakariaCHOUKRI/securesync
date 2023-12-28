@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-488cbe2525f31f7f8f7b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "securesync",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "securesync::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-securesync-Debug-24f2c3e9216afefd655c.json",
+					"name" : "securesync",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "securesync_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-securesync_autogen-Debug-d74777fca89db2f4544b.json",
+					"name" : "securesync_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "securesync_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-securesync_autogen_timestamp_deps-Debug-36616675bf85c2270887.json",
+					"name" : "securesync_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/zczak/Desktop/S5/Prog/Moi/securesync/src/gui/build-securesync-Desktop_Qt_6_6_1_MinGW_64_bit-Debug",
+		"source" : "C:/Users/zczak/Desktop/S5/Prog/Moi/securesync/src/gui/securesync"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}
