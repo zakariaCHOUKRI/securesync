@@ -4,7 +4,6 @@
 #include <sstream>
 #include <filesystem>
 #include <functional>
-#include <openssl/sha.h>
 #include <iomanip>
 #include <map>
 #include <string>
