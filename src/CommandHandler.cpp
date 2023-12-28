@@ -102,6 +102,10 @@ void CommandHandler::handleAdd(const std::string& filesToAdd) {
     }
 
     std::cout << "Staged files for commit.\n";
+    std::cout << "the files staged for commit are: " << endl;
+    for (auto const& elem: stagedFiles) {
+        cout << elem << endl;
+    }
 }
 void CommandHandler::handleCommit(const std::string& message) {
     if (!checkGitFile()) {
