@@ -4,11 +4,18 @@
 #include <sstream>
 #include <filesystem>
 #include <functional>
+#include <openssl/sha.h>
+#include <iomanip>
+#include <map>
+#include <string>
+
 
 using namespace std;
 namespace fs = std::filesystem;
 
 const fs::path gitBase = "./gitBase";
+std::map<std::string, std::string> fileHashes;  // A map to store file hashes
+
 
 
 
@@ -75,6 +82,39 @@ void CommandHandler::executeCommand(const std::string& command) {
     }
 }
 
+std::string calculateFileHash(const std::string& filePath) {
+    std::ifstream file(filePath, std::ios::binary);
+    if (!file) {
+        throw std::runtime_error("Could not open file: " + filePath);
+    }
+
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::hash<std::string> hasher;
+    return std::to_string(hasher(buffer.str()));
+}
+
+
+
+
+void storeFileHash(const std::string& filePath, const std::string& hash) {
+    fileHashes[filePath] = hash;
+}
+
+std::string retrieveLastCommitHash(const std::string& filePath) {
+    auto it = fileHashes.find(filePath);
+    if (it != fileHashes.end()) {
+        return it->second;
+    }
+    return "";  // Return empty string if hash not found
+}
+
+bool hasFileChanged(const std::string& filePath) {
+    std::string currentHash = calculateFileHash(filePath);
+    std::string lastHash = retrieveLastCommitHash(filePath);
+    return currentHash != lastHash;
+}
+
 
 void CommandHandler::handleAdd(const std::string& filesToAdd) {
     if (!checkGitFile()) {
@@ -89,8 +129,12 @@ void CommandHandler::handleAdd(const std::string& filesToAdd) {
     if (filesToAdd == ".") {
         // Add logic to stage all files in the current directory
         for (const auto& entry : fs::directory_iterator(currentDirectory)) {
-            if (entry.is_regular_file()) {
+            // cout << entry << endl;
+            if (entry.is_regular_file()){// && hasFileChanged(entry.path().string())) {
+                // cout << "Staged : " <<entry.path().string() << "\n";
                 stagedFiles.push_back(entry.path().string());
+                // std::string fileHash = calculateFileHash(entry.path().string());
+                // storeFileHash(entry.path().string(), fileHash);
             }
         }
     } else {
@@ -134,10 +178,19 @@ void CommandHandler::handleCommit(const std::string& message) {
 
     // Copy files and update commit info
     for (const auto& file : stagedFiles) {
+        
         if (fs::path(file).filename() != "git.txt") {
             std::string destFile = versionDir.string() + "/"+ fs::path(file).filename().string();
             fs::copy(file, destFile, fs::copy_options::overwrite_existing);
-            commitInfo << fs::path(file).filename() << "\n";
+
+            cout << "Commited : " << fs::path(file).string() << "\n";
+            
+            if (hasFileChanged(fs::path(file).string())){
+                commitInfo << fs::path(file).filename() << "\n";
+            }
+            std::string fileHash = calculateFileHash(fs::path(file).string());
+            storeFileHash(fs::path(file).string(), fileHash);
+            
         }
     }
 
@@ -349,4 +402,10 @@ void CommandHandler::handlePull() {
 
     std::cout << "Pull successful. Pulled changes from version " << previousVersion << ".\n";
 }
+
+
+
+
+
+
 
