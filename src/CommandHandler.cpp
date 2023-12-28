@@ -41,7 +41,7 @@ void CommandHandler::executeCommand(const std::string& command) {
             std::string message;
             getline(stream, message); // Get the rest of the line as the commit message
             handleCommit(message);
-        } else if (gitCommand == "createaccount") {
+        } else if (gitCommand == "register") {
             std::string email, password, confirmPass, temp;
             stream >> email >> password >> confirmPass;
             
@@ -51,7 +51,7 @@ void CommandHandler::executeCommand(const std::string& command) {
             } else {
                 std::cout << "Passwords do not match.\n";
             }
-        } else if (gitCommand == "placedown") {
+        } else if (gitCommand == "init") {
             fs::path gitBaseDir = gitBase / currentDirectory.filename();
             if (!fs::exists(gitBaseDir)) {
                 fs::create_directories(gitBaseDir);
@@ -107,43 +107,67 @@ void CommandHandler::handleCommit(const std::string& message) {
         std::cout << "Error: You must be logged in to add files.\n";
         return;
     }
-    
-    // fs::path gitBaseDir = gitBase / currentDirectory.filename();
 
-    
-    // std::string versionDirName = getVersionDirectoryName();
-    // fs::path versionDir = currentDirectory / versionDirName;
-    // fs::create_directory(versionDir);
-
-    // for (const auto& file : stagedFiles) {
-    //     std::string destFile = versionDir.u8string() + "/" + fs::path(file).filename().string();
-
-    //     cout << destFile << endl;
-    //     fs::copy(file, destFile, fs::copy_options::overwrite_existing);
-    // }
-    // Create a directory in gitBase corresponding to the current directory
     fs::path gitBaseDir = gitBase / currentDirectory.filename();
     if (!fs::exists(gitBaseDir)) {
         fs::create_directories(gitBaseDir);
     }
 
-    // Create a versioned subdirectory in the gitBase directory
     std::string versionDirName = getVersionDirectoryName();
     fs::path versionDir = gitBaseDir / versionDirName;
     fs::create_directory(versionDir);
 
+    // Copy staged files to the version folder
     for (const auto& file : stagedFiles) {
-        std::string destFile = versionDir.string() +"/"+ fs::path(file).filename().string();
+        std::string destFile = versionDir.string() + "/" + fs::path(file).filename().string();
         fs::copy(file, destFile, fs::copy_options::overwrite_existing);
         cout << destFile << endl;
     }
 
-    cout << currentDirectory.string()+"/"+"git.txt" << endl;
-    updateGitFileVersionNumber(currentDirectory.string()+"/"+"git.txt");
+    // Read the current git.txt for version number
+    std::ifstream inFile(currentDirectory / "git.txt");
+    if (!inFile.is_open()) {
+        std::cerr << "Unable to open git.txt for reading." << std::endl;
+        return;
+    }
 
-    stagedFiles.clear(); // Clear staged files after commit
+    unsigned int prevVersionNumber;
+    inFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Skip the first line
+    inFile >> prevVersionNumber; // Read the previous version number
+    inFile.close();
+
+    // Open the current git.txt for writing and append mode
+    std::ofstream outFile(currentDirectory / "git.txt");
+    if (!outFile.is_open()) {
+        std::cerr << "Unable to open git.txt for writing." << std::endl;
+        return;
+    }
+
+    // Write the magic number
+    outFile << "1234\n";
+
+    // Write the updated version number
+    outFile << prevVersionNumber + 1 << "\n";
+
+    // Get current timestamp for the commit
+    auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::tm* timestamp = std::localtime(&now);
+
+    // Append commit information
+    outFile << std::put_time(timestamp, "%Y-%m-%d %H:%M:%S") << "\n";
+    for (const auto& file : stagedFiles) {
+        outFile << fs::path(file).filename().string() << "\n";
+    }
+    outFile << "Message: " << message << "\n";
+
+    outFile.close();
+
+    // Clear staged files after commit
+    stagedFiles.clear();
     std::cout << "Commit successful: " << message << std::endl;
 }
+
+
 
 void CommandHandler::createAccount(const std::string& email, const std::string& password) {
     std::ofstream accountsFile("accounts.txt", std::ios::app);

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/21269/Desktop/securesync/src",
-      "program": "c:/Users/21269/Desktop/securesync/src/build/Debug/outDebug",
+      "cwd": "c:/Users/zczak/Desktop/S5/Prog/Moi/securesync/src",
+      "program": "c:/Users/zczak/Desktop/S5/Prog/Moi/securesync/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
