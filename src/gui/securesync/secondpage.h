@@ -28,6 +28,8 @@ private slots:
 
     void updateFileList(const QString &directoryPath);
 
+    void on_revertButton_clicked();
+
 private:
     Ui::secondPage *ui;
 };

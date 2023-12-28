@@ -351,9 +351,9 @@ C:/Users/zczak/Desktop/S5/Prog/Moi/securesync/src/gui/securesync/mainwindow.h
  mdp:D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/time.h
  mdp:D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/vadefs.h
  mdp:D:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/wchar.h
-C:/Users/zczak/Desktop/S5/Prog/Moi/securesync/src/gui/securesync/main.cpp
 C:/Users/zczak/Desktop/S5/Prog/Moi/securesync/src/gui/securesync/mainwindow.cpp
  uic:./ui_mainwindow.h
+C:/Users/zczak/Desktop/S5/Prog/Moi/securesync/src/gui/securesync/main.cpp
 C:/Users/zczak/Desktop/S5/Prog/Moi/securesync/src/gui/securesync/secondpage.h
  mmc:Q_OBJECT
  mdp:C:/Users/zczak/Desktop/S5/Prog/Moi/securesync/src/gui/build-securesync-Desktop_Qt_6_6_1_MinGW_64_bit-Debug/securesync_autogen/moc_predefs.h

@@ -40,9 +40,9 @@
    <property name="geometry">
     <rect>
      <x>560</x>
-     <y>40</y>
+     <y>90</y>
      <width>271</width>
-     <height>321</height>
+     <height>271</height>
     </rect>
    </property>
   </widget>
@@ -112,7 +112,7 @@
    <property name="geometry">
     <rect>
      <x>630</x>
-     <y>20</y>
+     <y>70</y>
      <width>131</width>
      <height>16</height>
     </rect>
@@ -132,6 +132,29 @@
    </property>
    <property name="text">
     <string>commit message</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="revertButton">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>20</y>
+     <width>111</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>git revert</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="revertInput">
+   <property name="geometry">
+    <rect>
+     <x>680</x>
+     <y>20</y>
+     <width>151</width>
+     <height>25</height>
+    </rect>
    </property>
   </widget>
  </widget>
