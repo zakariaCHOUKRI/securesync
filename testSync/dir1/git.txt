@@ -1,31 +1,14 @@
 1234
-8
-2023-12-28 20:56:12
-Message:  -m "lololol"
+2
+2023-12-28 21:56:51
+Message:  -m "Add files"
 Files:
 "file1.txt"
 "file2.txt"
 
-2023-12-28 20:57:07
-Message:  -m "ddd"
+2023-12-28 21:57:31
+Message:  -m "Add other files (file 3)"
 Files:
 "file1.txt"
 "file2.txt"
-
-2023-12-28 21:17:09
-Message:  -m "msg"
-Files:
-"file1.txt"
-"file2.txt"
-
-2023-12-28 21:19:10
-Message:  -m "mmmm"
-Files:
-"file1.txt"
-"file2.txt"
-
-2023-12-28 21:21:06
-Message:  -m "sdfsd"
-Files:
-"file1.txt"
-"file2.txt"
+"file3.txt"

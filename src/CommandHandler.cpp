@@ -59,6 +59,13 @@ void CommandHandler::executeCommand(const std::string& command) {
             placeGitFile();
         } else if (gitCommand == "pull") {
             handlePull();
+        } else if (gitCommand == "revert") {
+            unsigned int versionNumber;
+            if (stream >> versionNumber) {
+                handleRevert(versionNumber);
+            } else {
+                std::cerr << "Invalid version number for git revert." << std::endl;
+            }
         }
         else {
             std::cout << "Unknown git command.\n";
@@ -188,6 +195,33 @@ void CommandHandler::handleLogin(const std::string& email, const std::string& pa
         isLoggedIn = false;
     }
 }
+
+void CommandHandler::handleRevert(unsigned int versionNumber) {
+    const fs::path gitBaseDir = "C:/Users/21269/Desktop/securesync/gitBase"; // Adjust the path as needed
+    fs::path versionDir = gitBaseDir / currentDirectory.filename() / ("version_" + std::to_string(versionNumber));
+
+    if (!fs::exists(versionDir) || !fs::is_directory(versionDir)) {
+        std::cerr << "Version directory does not exist: " << versionDir << std::endl;
+        return;
+    }
+
+    // Remove all files in the current directory except git.txt
+    for (const auto& entry : fs::directory_iterator(currentDirectory)) {
+        if (entry.is_regular_file() && entry.path().filename() != "git.txt") {
+            fs::remove(entry.path());
+        }
+    }
+
+    // Copy files from the version directory in gitBase to the current directory
+    for (const auto& entry : fs::directory_iterator(versionDir)) {
+        if (entry.is_regular_file()) {
+            fs::copy(entry.path(), currentDirectory / entry.path().filename(), fs::copy_options::overwrite_existing);
+        }
+    }
+
+    std::cout << "Reverted to version " << versionNumber << " from " << versionDir << std::endl;
+}
+
 
 bool CommandHandler::verifyCredentials(const std::string& email, const std::string& hashedPassword) {
     std::ifstream accountsFile("accounts.txt");

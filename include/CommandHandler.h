@@ -34,6 +34,8 @@ public:
     void updateGitFileVersionNumber(const std::string& filePath,const std::string&);
     void handlePull();
     std::string rewriteGitFileWithNewInfo(const std::string& filePath, const std::string& newInfo);
+    void handleRevert(unsigned int versionNumber);
+
 
 
 };
