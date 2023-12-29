@@ -28,7 +28,12 @@ void CommandHandler::executeCommand(const std::string& command) {
     std::string cmd;
     stream >> cmd;
 
-    if (cmd == "cd") {
+     if (cmd == "ls") {
+        for (const auto& entry : std::filesystem::directory_iterator(currentDirectory)) {
+            std::cout << entry.path().filename().string() << std::endl;
+        }
+    }
+    else if (cmd == "cd") {
         std::string dir;
         stream >> dir;
         changeDirectory(dir);
@@ -80,6 +85,15 @@ void CommandHandler::executeCommand(const std::string& command) {
             } else {
                 std::cerr << "Invalid version number for git revert." << std::endl;
             }
+        } else if (gitCommand == "help") {
+            std::cout << "Available commands:\n";
+            std::cout << "git login - Log in with email and password\n";
+            std::cout << "git add - Add files to staging\n";
+            std::cout << "git commit - Commit staged files\n";
+            std::cout << "git register - Create a new account\n";
+            std::cout << "git init - Initialize the repository\n";
+            std::cout << "git pull - Pull changes from remote repository\n";
+            std::cout << "git revert - Revert to a specific version\n";
         }
         else {
             std::cout << "Unknown git command.\n";

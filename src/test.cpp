@@ -34,7 +34,7 @@ void testChangeDirectory() {
     CommandHandler commandHandler(absolutePath);
     commandHandler.changeDirectory("gui");
     // cout << commandHandler.getCurrentDirectory() << endl;
-    assert(commandHandler.getCurrentDirectory() == "C:\\Users\\21269\\Desktop\\securesync\\src\\gui");
+    assert(commandHandler.getCurrentDirectory() == std::filesystem::absolute(std::filesystem::path(__FILE__).parent_path()).string() + "\\gui");
     std::cout << "testChangeDirectory passed.\n";
 }
 
