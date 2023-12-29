@@ -3,6 +3,7 @@
 #include "../../CommandHandler.cpp"
 #include <QMessageBox>
 #include <iostream>
+#include "../../test.cpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

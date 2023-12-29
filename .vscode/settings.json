@@ -111,6 +111,7 @@
     "typeinfo": "cpp",
     "optional": "cpp",
     "map": "cpp",
-    "cinttypes": "cpp"
+    "cinttypes": "cpp",
+    "cassert": "cpp"
   }
 }
