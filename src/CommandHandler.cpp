@@ -15,6 +15,11 @@ namespace fs = std::filesystem;
 const fs::path gitBase = "./gitBase";
 std::map<std::string, std::string> fileHashes;  // A map to store file hashes
 
+void testAll();
+
+void handleTest() {
+        testAll();  // Call the testAll function
+}
 
 
 
@@ -27,7 +32,10 @@ void CommandHandler::executeCommand(const std::string& command) {
         std::string dir;
         stream >> dir;
         changeDirectory(dir);
-    } else if (cmd == "git") {
+    } 
+    else if (cmd == "test") {
+        handleTest();
+    }else if (cmd == "git") {
         std::string gitCommand;
         stream >> gitCommand;
 
@@ -80,6 +88,8 @@ void CommandHandler::executeCommand(const std::string& command) {
         std::cout << "Command not recognized.\n";
     }
 }
+
+
 
 std::string calculateFileHash(const std::string& filePath) {
     std::ifstream file(filePath, std::ios::binary);

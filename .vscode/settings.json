@@ -109,6 +109,8 @@
     "stdexcept": "cpp",
     "streambuf": "cpp",
     "typeinfo": "cpp",
-    "optional": "cpp"
+    "optional": "cpp",
+    "map": "cpp",
+    "cinttypes": "cpp"
   }
 }
