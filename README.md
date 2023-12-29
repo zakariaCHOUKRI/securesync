@@ -4,14 +4,12 @@ SecureSync is a comprehensive file synchronization tool with version management 
 
 ## Features
 
-- **User-Friendly GUI**: A clean and intuitive interface using Qt widgets for easy navigation.
-- **Local File Synchronization**: Core functionality for selecting folders, comparing file versions, and updating files locally.
-- **Version Management**: Keep track of changes, timestamps, and user modifications, allowing users to roll back to previous file versions.
-- **Secure Authentication**: Integration of a secure login system with hashed and securely stored passwords.
-- **Remote File Synchronization**: Extend the tool to support remote file synchronization over a network using basic socket programming.
-- **Multithreading**: Introduce multithreading to enhance the performance of file synchronization processes.
-- **Error Handling and Logging**: Implement mechanisms to handle network issues, file conflicts, and a logging system to track synchronization activities and errors.
-- **Security Enhancements**: Implement secure file transfer protocols, such as SSH or SSL, to encrypt data during remote synchronization.
+- **Intuitive GUI**: Built using the Qt framework, offering a straightforward and easy-to-navigate interface.
+- **Local File Synchronization**: Enables users to select folders, compare file versions, and synchronize files locally.
+- **Version Control**: Tracks file changes, timestamps, and user modifications, with the option to revert to previous versions.
+- **Secure Authentication**: Integrates a secure login system, utilizing password hashing and secure storage.
+- **Remote Synchronization**: Supports file synchronization over networks, employing basic socket programming for secure transfers.
+- **Error Handling and Logging**: Robust mechanisms to handle various issues like network errors, file conflicts, along with a detailed logging system for tracking activities and errors.
 
 ## Getting Started
 
@@ -20,16 +18,18 @@ Follow these instructions to get a copy of the project up and running on your lo
 ### Prerequisites
 
 - C++ development environment with Qt installed.
-- [Add any additional prerequisites here]
 
 ### Installation
 
 1. Clone the repository: `git clone https://github.com/zakariaCHOUKRI/securesync.git`
-2. [Add any additional installation steps here]
 
 ## Usage
+### 1. Command-Line Interface
+- Make the compile script executable:
+```bash
+chmod +x ./compile.sh
+```
 
-1. [Explain how to use the tool, including its features and options]
 2. [Provide examples and screenshots]
 
 ## Documentation
